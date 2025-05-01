@@ -5,7 +5,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mwan_mobile/core/constants/app_constants.dart';
 import 'package:mwan_mobile/core/router/app_router.dart';
 import 'package:mwan_mobile/core/theme/app_theme.dart';
-import 'package:mwan_mobile/core/utils/app_logger.dart';
 import 'package:mwan_mobile/features/auth/presentation/cubit/auth_cubit.dart';
 
 void main() async {
