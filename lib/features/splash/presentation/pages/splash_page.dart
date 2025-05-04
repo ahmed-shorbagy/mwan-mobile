@@ -43,9 +43,7 @@ class _SplashPageState extends State<SplashPage>
     await Future.delayed(const Duration(seconds: 3));
 
     if (mounted) {
-      // Check authentication status
-      // In a real app, you would use a cubit or bloc to check auth status
-      // For now, we'll just navigate to the login screen
+      // Navigate to the home page
       context.go(AppConstants.homeRoute);
     }
   }
@@ -62,23 +60,17 @@ class _SplashPageState extends State<SplashPage>
             children: [
               // App logo
               Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryColor,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.chat_bubble_outline,
-                  size: 60,
-                  color: Colors.white,
-                ),
+                width: 150,
+                height: 150,
+                padding: const EdgeInsets.all(16),
+
+                child: Image.asset('assets/images/logo.png'),
               ),
               const SizedBox(height: 24),
 
               // App name
               const Text(
-                'Mwan محادثاتك',
+                'Mwan إدارة المشاريع',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 28,
@@ -89,7 +81,7 @@ class _SplashPageState extends State<SplashPage>
 
               // Tagline
               Text(
-                'تواصل مع اصدقائك',
+                'إدارة مشاريعك بكفاءة عالية',
                 style: TextStyle(color: Colors.grey[400], fontSize: 16),
               ),
 

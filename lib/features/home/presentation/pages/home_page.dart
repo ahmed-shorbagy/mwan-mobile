@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mwan_mobile/core/constants/app_constants.dart';
-import 'package:mwan_mobile/core/theme/app_theme.dart';
+import 'package:flutter/services.dart';
+import 'package:mwan_mobile/core/utils/assets.dart';
+import 'package:mwan_mobile/features/home/presentation/widgets/bottom_nav_bar.dart';
+import 'package:mwan_mobile/features/home/presentation/widgets/menu_option.dart';
+import 'package:mwan_mobile/features/home/presentation/widgets/side_menu.dart';
+import 'package:mwan_mobile/features/home/presentation/widgets/user_header.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,23 +13,42 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool _isMenuOpen = false;
+  bool _showSideMenu = false;
+  late AnimationController _menuAnimationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    _initMenuAnimations();
+    // Set app to RTL mode
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+
+  void _initMenuAnimations() {
+    _menuAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _menuAnimationController, curve: Curves.easeIn),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _menuAnimationController, curve: Curves.easeOut),
     );
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _menuAnimationController.dispose();
     super.dispose();
   }
 
@@ -34,329 +56,134 @@ class _HomePageState extends State<HomePage>
     setState(() {
       _isMenuOpen = !_isMenuOpen;
       if (_isMenuOpen) {
-        _animationController.forward();
+        _menuAnimationController.forward();
       } else {
-        _animationController.reverse();
+        _menuAnimationController.reverse();
       }
+    });
+  }
+
+  void _openSideMenu() {
+    setState(() {
+      _isMenuOpen = false;
+      _menuAnimationController.reverse();
+      _showSideMenu = true;
+    });
+  }
+
+  void _closeSideMenu() {
+    setState(() {
+      _showSideMenu = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
-        elevation: 0,
-        title: Text('محادثاتك', style: AppTheme.headline4),
-        actions: [
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
-        ],
-      ),
-      body: Stack(
-        children: [
-          // Main content
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Online users
-                Text('متصل الآن', style: AppTheme.headline5),
-                const SizedBox(height: 16),
-                SizedBox(
-                  height: 100,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: Column(
-                          children: [
-                            Stack(
-                              children: [
-                                CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: Colors.grey[800],
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 30,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 0,
-                                  bottom: 0,
-                                  child: Container(
-                                    width: 15,
-                                    height: 15,
-                                    decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: AppTheme.backgroundColor,
-                                        width: 2,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'المستخدم ${index + 1}',
-                              style: AppTheme.caption.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Recent chats
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('المحادثات الأخيرة', style: AppTheme.headline5),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'عرض الكل',
-                        style: AppTheme.bodyText2.copyWith(
-                          color: AppTheme.primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: 15,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: CircleAvatar(
-                          radius: 24,
-                          backgroundColor: Colors.grey[800],
-                          child: Icon(Icons.person, color: Colors.grey[600]),
-                        ),
-                        title: Text(
-                          'محمد النور ${index + 1}',
-                          style: AppTheme.bodyText1.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        subtitle: Text(
-                          'مرحبا، كيف حالك؟',
-                          style: AppTheme.bodyText2.copyWith(
-                            color: Colors.grey,
-                          ),
-                        ),
-                        trailing: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              '12:30',
-                              style: AppTheme.caption.copyWith(
-                                color: Colors.grey[400],
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: AppTheme.primaryColor,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Text(
-                                '2',
-                                style: AppTheme.caption.copyWith(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        onTap: () {
-                          // Navigate to chat screen
-                          context.go(AppConstants.chatRoute);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Floating menu items (displayed when center button is pressed)
-          if (_isMenuOpen) _buildFloatingMenu(),
-
-          // Semi-transparent background overlay when menu is open
-          if (_isMenuOpen)
-            GestureDetector(
-              onTap: _toggleMenu,
-              child: Container(color: Colors.black.withOpacity(0.5)),
-            ),
-        ],
-      ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
-  Widget _buildBottomNavigationBar() {
-    return Container(
-      height: 70,
-      decoration: BoxDecoration(
-        color: AppTheme.bottomNavBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 10,
-            offset: const Offset(0, -3),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(Icons.grid_view, 'الرئيسية', 0),
-          _buildNavItem(Icons.people_outline, 'الاتصالات', 1),
-          _buildCenterButton(),
-          _buildNavItem(Icons.chat_bubble_outline, 'المحادثات', 3),
-          _buildNavItem(Icons.shield_outlined, 'الأمان', 4),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, int index) {
-    final bool isSelected = index == 0; // Currently on home page
-
-    return InkWell(
-      onTap: () {
-        // Handle navigation
-        switch (index) {
-          case 3: // Chat
-            context.go(AppConstants.chatRoute);
-            break;
-          // Add other cases for other pages
-        }
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color:
-                isSelected
-                    ? AppTheme.primaryColor
-                    : AppTheme.bottomNavUnselectedColor,
-            size: 24,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: AppTheme.caption.copyWith(
-              color:
-                  isSelected
-                      ? AppTheme.primaryColor
-                      : AppTheme.bottomNavUnselectedColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCenterButton() {
-    return GestureDetector(
-      onTap: _toggleMenu,
-      child: Container(
-        height: 56,
-        width: 56,
-        decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 10,
-              offset: const Offset(0, 0),
-            ),
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
+          children: [
+            _buildMainContent(),
+            if (_isMenuOpen) _buildOverlayMenu(),
+            if (_showSideMenu) SideMenu(onClose: _closeSideMenu),
           ],
         ),
-        child: Container(
-          margin: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            color: AppTheme.primaryColor,
-            shape: BoxShape.circle,
-          ),
-          child: AnimatedIcon(
-            icon: AnimatedIcons.menu_close,
-            progress: _animationController,
-            color: Colors.white,
-            size: 30,
-          ),
-        ),
       ),
     );
   }
 
-  Widget _buildFloatingMenu() {
-    return Positioned(
-      bottom: 90,
-      left: 0,
-      right: 0,
+  Widget _buildMainContent() {
+    return SafeArea(
       child: Column(
         children: [
-          _buildFloatingMenuItem('الصداقة', Icons.verified_user, onTap: () {}),
-          const SizedBox(height: 16),
-          _buildFloatingMenuItem('المكالمة', Icons.phone, onTap: () {}),
-          const SizedBox(height: 16),
-          _buildFloatingMenuItem('الطاقة', Icons.flash_on, onTap: () {}),
-          const SizedBox(height: 16),
-          _buildFloatingMenuItem('الخدمة', Icons.business_center, onTap: () {}),
-          const SizedBox(height: 16),
-          _buildFloatingMenuItem('أمن الدولة', Icons.shield, onTap: () {}),
+          const UserHeader(),
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [],
+              ),
+            ),
+          ),
+          BottomNavBar(onCenterButtonTap: _toggleMenu),
         ],
       ),
     );
   }
 
-  Widget _buildFloatingMenuItem(
-    String label,
-    IconData icon, {
-    required Function() onTap,
-  }) {
-    return Center(
+  Widget _buildOverlayMenu() {
+    final menuItems = [
+      {'label': 'أمن الدولة', 'svg': Assets.imagesSheild},
+      {
+        'label': 'المياه',
+        'svg': Assets.imagesWaterDrop,
+        'active': false,
+        'onTap': _openSideMenu,
+      },
+      {'label': 'الطاقة', 'svg': Assets.imagesEnergy},
+      {'label': 'الغذاء', 'svg': Assets.imagesCarrot},
+      {'label': 'الصحة', 'svg': Assets.imagesAmbulance},
+    ];
+
+    return Positioned.fill(
       child: GestureDetector(
-        onTap: () {
-          onTap();
-          _toggleMenu();
-        },
-        child: Container(
-          width: 160,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          decoration: BoxDecoration(
-            color: AppTheme.cardColor,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.withOpacity(0.3)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(label, style: AppTheme.bodyText2),
-              Icon(icon, color: Colors.white, size: 20),
-            ],
+        onTap: _toggleMenu,
+        behavior: HitTestBehavior.opaque,
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: Container(
+            color: const Color(0xDD212121),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 100.0),
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(menuItems.length, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: AnimatedBuilder(
+                          animation: _menuAnimationController,
+                          builder: (context, child) {
+                            final delay = index * 0.1;
+                            final value =
+                                _menuAnimationController.value > delay
+                                    ? (_menuAnimationController.value - delay) /
+                                        (1 - delay)
+                                    : 0.0;
+
+                            return Transform.translate(
+                              offset: Offset(0, 20 * (1 - value)),
+                              child: Opacity(
+                                opacity: value,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (menuItems[index]['onTap'] != null) {
+                                      (menuItems[index]['onTap'] as Function)();
+                                    }
+                                  },
+                                  child: MenuOption(
+                                    label: menuItems[index]['label'] as String,
+                                    svgPath: menuItems[index]['svg'] as String,
+                                    isActive:
+                                        menuItems[index]['active'] as bool? ??
+                                        false,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),
