@@ -6,12 +6,12 @@ class AppTheme {
   AppTheme._();
 
   // Colors
-  static const Color primaryColor = Color(0xFF00BF6D);
-  static const Color secondaryColor = Color(0xFFFE9901);
+  static const Color primaryColor = Color(0xFF63BE6A);
+  static const Color secondaryColor = Color(0xFF0D2C0F);
   static const Color errorColor = Color(0xFFFF5252);
   static const Color backgroundColor = Color(0xFF121212);
   static const Color surfaceColor = Color(0xFF1E1E1E);
-  static const Color cardColor = Color(0xFF2C2C2C);
+  static const Color cardColor = Color(0xFF18621D);
   static const Color textColor = Color(0xFFFFFFFF);
   static const Color secondaryTextColor = Color(0xFFB3B3B3);
   static const Color dividerColor = Color(0xFF3A3A3A);
