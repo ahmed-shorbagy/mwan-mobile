@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mwan_mobile/core/theme/app_theme.dart';
+import 'package:mwan_mobile/core/utils/assets.dart';
 import 'package:mwan_mobile/features/home/presentation/widgets/circular_menu_button.dart';
 
 class BottomNavBar extends StatelessWidget {
   final VoidCallback onCenterButtonTap;
+  final int currentIndex;
+  final Function(int) onNavItemTapped;
 
-  const BottomNavBar({super.key, required this.onCenterButtonTap});
+  const BottomNavBar({
+    super.key,
+    required this.onCenterButtonTap,
+    required this.currentIndex,
+    required this.onNavItemTapped,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,17 +25,30 @@ class BottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavItem(Icons.grid_view_rounded, isSelected: true),
-          _buildNavItem(Icons.star_border_outlined),
-          CircularMenuButton(onTap: onCenterButtonTap),
-          _buildNavItem(Icons.pie_chart_outline),
-          _buildNavItem(Icons.shield_outlined),
+          _buildNavItem(Assets.imagesHandArrowUp, index: 0),
+          _buildNavItem(Assets.imagesTwohand, index: 1),
+          CircularMenuButton(
+            onTap: onCenterButtonTap,
+            icon: SvgPicture.asset(
+              Assets.imagesWaterDrop,
+              width: 22,
+              height: 22,
+              colorFilter: const ColorFilter.mode(
+                Colors.green,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+          _buildNavItem(Assets.imagesUsersThree, index: 3),
+          _buildNavItem(Assets.imagesKanban, index: 4),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, {bool isSelected = false}) {
+  Widget _buildNavItem(String assetPath, {required int index}) {
+    final isSelected = currentIndex == index;
+
     return Container(
       width: 42,
       height: 42,
@@ -45,12 +67,16 @@ class BottomNavBar extends StatelessWidget {
                 : null,
       ),
       child: IconButton(
-        onPressed: () {},
+        onPressed: () => onNavItemTapped(index),
         padding: EdgeInsets.zero,
-        icon: Icon(
-          icon,
-          color: isSelected ? AppTheme.primaryColor : Colors.grey,
-          size: 24,
+        icon: SvgPicture.asset(
+          assetPath,
+          width: 24,
+          height: 24,
+          colorFilter: ColorFilter.mode(
+            isSelected ? AppTheme.primaryColor : Colors.grey,
+            BlendMode.srcIn,
+          ),
         ),
       ),
     );

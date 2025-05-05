@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mwan_mobile/core/utils/assets.dart';
+import 'package:mwan_mobile/features/home/presentation/pages/dummy_views.dart';
+import 'package:mwan_mobile/features/home/presentation/pages/side_menu_view.dart';
 import 'package:mwan_mobile/features/home/presentation/widgets/bottom_nav_bar.dart';
 import 'package:mwan_mobile/features/home/presentation/widgets/menu_option.dart';
-import 'package:mwan_mobile/features/home/presentation/widgets/side_menu.dart';
 import 'package:mwan_mobile/features/home/presentation/widgets/user_header.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,10 +16,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool _isMenuOpen = false;
-  bool _showSideMenu = false;
   late AnimationController _menuAnimationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  int _currentIndex = 4; // Start with Kanban (home) selected
 
   @override
   void initState() {
@@ -63,52 +64,58 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  void _openSideMenu() {
+  void _onNavItemTapped(int index) {
     setState(() {
-      _isMenuOpen = false;
-      _menuAnimationController.reverse();
-      _showSideMenu = true;
+      _currentIndex = index;
     });
   }
 
-  void _closeSideMenu() {
-    setState(() {
-      _showSideMenu = false;
-    });
+  Widget _getCurrentView() {
+    switch (_currentIndex) {
+      case 0: // HandArrowUp - Side Menu View
+        return const SideMenuView();
+      case 1: // TwoHands
+        return const TwoHandsView();
+      case 2: // Center Button - No view
+        return const SizedBox();
+      case 3: // Users
+        return const UsersView();
+      case 4: // Kanban (Home)
+      default:
+        return _buildHomeContent();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: Stack(
-          children: [
-            _buildMainContent(),
-            if (_isMenuOpen) _buildOverlayMenu(),
-            if (_showSideMenu) SideMenu(onClose: _closeSideMenu),
-          ],
-        ),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Column(
+              children: [
+                const UserHeader(),
+                Expanded(child: _getCurrentView()),
+                BottomNavBar(
+                  onCenterButtonTap: _toggleMenu,
+                  currentIndex: _currentIndex,
+                  onNavItemTapped: _onNavItemTapped,
+                ),
+              ],
+            ),
+          ),
+          if (_isMenuOpen) _buildOverlayMenu(),
+        ],
       ),
     );
   }
 
-  Widget _buildMainContent() {
-    return SafeArea(
+  Widget _buildHomeContent() {
+    return Center(
       child: Column(
-        children: [
-          const UserHeader(),
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [],
-              ),
-            ),
-          ),
-          BottomNavBar(onCenterButtonTap: _toggleMenu),
-        ],
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [],
       ),
     );
   }
@@ -116,12 +123,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _buildOverlayMenu() {
     final menuItems = [
       {'label': 'أمن الدولة', 'svg': Assets.imagesSheild},
-      {
-        'label': 'المياه',
-        'svg': Assets.imagesWaterDrop,
-        'active': false,
-        'onTap': _openSideMenu,
-      },
+      {'label': 'المياه', 'svg': Assets.imagesWaterDrop, 'active': false},
       {'label': 'الطاقة', 'svg': Assets.imagesEnergy},
       {'label': 'الغذاء', 'svg': Assets.imagesCarrot},
       {'label': 'الصحة', 'svg': Assets.imagesAmbulance},
@@ -160,19 +162,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               offset: Offset(0, 20 * (1 - value)),
                               child: Opacity(
                                 opacity: value,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (menuItems[index]['onTap'] != null) {
-                                      (menuItems[index]['onTap'] as Function)();
-                                    }
-                                  },
-                                  child: MenuOption(
-                                    label: menuItems[index]['label'] as String,
-                                    svgPath: menuItems[index]['svg'] as String,
-                                    isActive:
-                                        menuItems[index]['active'] as bool? ??
-                                        false,
-                                  ),
+                                child: MenuOption(
+                                  label: menuItems[index]['label'] as String,
+                                  svgPath: menuItems[index]['svg'] as String,
+                                  isActive:
+                                      menuItems[index]['active'] as bool? ??
+                                      false,
                                 ),
                               ),
                             );

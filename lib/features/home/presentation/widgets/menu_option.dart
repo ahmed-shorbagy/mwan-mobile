@@ -1,78 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mwan_mobile/core/theme/app_theme.dart';
 
 class MenuOption extends StatelessWidget {
   final String label;
   final String svgPath;
   final bool isActive;
+  final VoidCallback? onTap;
 
   const MenuOption({
     super.key,
     required this.label,
     required this.svgPath,
     this.isActive = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 280,
-      height: 50,
-      decoration: BoxDecoration(
-        color: isActive ? AppTheme.primaryColor : const Color(0xFF252525),
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(
-          color: isActive ? AppTheme.primaryColor : const Color(0xFF353535),
-          width: 1,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 150,
+        height: 50,
+        decoration: BoxDecoration(
+          color: const Color(0xFF1C1C1C),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFF333333), width: 1),
         ),
-        boxShadow: [
-          if (isActive)
-            BoxShadow(
-              color: AppTheme.primaryColor.withOpacity(0.3),
-              blurRadius: 8,
-              spreadRadius: 0,
-              offset: const Offset(0, 2),
-            ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(), // Empty container for equal spacing
-            Text(
-              label,
-              style: TextStyle(
-                color: isActive ? Colors.white : Colors.grey[400],
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                svgPath,
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
               ),
-            ),
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color:
-                    isActive
-                        ? Colors.white.withOpacity(0.2)
-                        : Colors.black.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  svgPath,
-                  width: 18,
-                  height: 18,
-                  colorFilter: ColorFilter.mode(
-                    isActive ? Colors.white : Colors.grey[400]!,
-                    BlendMode.srcIn,
-                  ),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

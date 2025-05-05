@@ -10,13 +10,37 @@ class UserHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Notification icon with badge
+
+          // User info with avatar
+          const CircleAvatar(
+            radius: 22,
+            backgroundImage: NetworkImage(
+              'https://randomuser.me/api/portraits/men/32.jpg',
+            ),
+          ),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'مرحباً بك',
+                style: AppTheme.headline4.copyWith(fontWeight: FontWeight.w400),
+              ),
+              Text(
+                'محمد أشرف👋',
+                style: AppTheme.headline4.copyWith(fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+          const Spacer(),
           Stack(
             children: [
               const Icon(FontAwesomeIcons.bell, color: Colors.white, size: 28),
               Positioned(
-                left: 0,
+                right: 0,
                 top: 0,
                 child: Container(
                   width: 10,
@@ -26,36 +50,6 @@ class UserHeader extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.black, width: 1),
                   ),
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          // User info with avatar
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    'مرحباً بك',
-                    style: AppTheme.headline4.copyWith(
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    '👋محمد أشرف',
-                    style: AppTheme.headline4.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 8),
-              const CircleAvatar(
-                radius: 22,
-                backgroundImage: NetworkImage(
-                  'https://randomuser.me/api/portraits/men/32.jpg',
                 ),
               ),
             ],

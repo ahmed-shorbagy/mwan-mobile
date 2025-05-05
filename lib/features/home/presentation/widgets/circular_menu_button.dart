@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mwan_mobile/core/theme/app_theme.dart';
 
 class CircularMenuButton extends StatelessWidget {
   final VoidCallback onTap;
+  final Widget? icon;
 
-  const CircularMenuButton({super.key, required this.onTap});
+  const CircularMenuButton({super.key, required this.onTap, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -16,19 +16,28 @@ class CircularMenuButton extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: LinearGradient(
-            colors: [AppTheme.primaryColor, AppTheme.primaryColor],
+            colors: [
+              const Color(0xFFFF9B4E), // Orange
+              const Color(0xFF4CAF50), // Green
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.primaryColor.withOpacity(0.3),
-              blurRadius: 8,
-              spreadRadius: 1,
-            ),
-          ],
         ),
-        child: const Icon(Icons.add, color: Colors.white, size: 30),
+        child: Center(
+          child: Container(
+            width: 52,
+            height: 52,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black,
+            ),
+            child: Center(
+              child:
+                  icon ?? const Icon(Icons.add, color: Colors.white, size: 24),
+            ),
+          ),
+        ),
       ),
     );
   }
