@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mwan_mobile/core/router/app_router.dart';
 import 'package:mwan_mobile/core/utils/assets.dart';
-import 'package:mwan_mobile/features/home/presentation/pages/dummy_views.dart';
-import 'package:mwan_mobile/features/home/presentation/pages/side_menu_view.dart';
 import 'package:mwan_mobile/features/home/presentation/widgets/bottom_nav_bar.dart';
 import 'package:mwan_mobile/features/home/presentation/widgets/menu_option.dart';
 import 'package:mwan_mobile/features/home/presentation/widgets/user_header.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int selectedIndex;
+  final Widget child;
+
+  const HomePage({super.key, required this.selectedIndex, required this.child});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -19,7 +22,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late AnimationController _menuAnimationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  int _currentIndex = 4; // Start with Kanban (home) selected
 
   @override
   void initState() {
@@ -65,24 +67,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _onNavItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
-  Widget _getCurrentView() {
-    switch (_currentIndex) {
-      case 0: // HandArrowUp - Side Menu View
-        return const SideMenuView();
-      case 1: // TwoHands
-        return const TwoHandsView();
-      case 2: // Center Button - No view
-        return const SizedBox();
-      case 3: // Users
-        return const UsersView();
-      case 4: // Kanban (Home)
-      default:
-        return _buildHomeContent();
+    switch (index) {
+      case 0:
+        GoRouter.of(context).go(AppRouter.sideMenuRoute);
+        break;
+      case 1:
+        GoRouter.of(context).go(AppRouter.twoHandsRoute);
+        break;
+      case 3:
+        GoRouter.of(context).go(AppRouter.usersRoute);
+        break;
+      case 4:
+        GoRouter.of(context).go(AppRouter.homeKanbanRoute);
+        break;
     }
   }
 
@@ -96,10 +93,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Column(
               children: [
                 const UserHeader(),
-                Expanded(child: _getCurrentView()),
+                Expanded(child: widget.child),
                 BottomNavBar(
                   onCenterButtonTap: _toggleMenu,
-                  currentIndex: _currentIndex,
+                  currentIndex: widget.selectedIndex,
                   onNavItemTapped: _onNavItemTapped,
                 ),
               ],
@@ -107,15 +104,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           if (_isMenuOpen) _buildOverlayMenu(),
         ],
-      ),
-    );
-  }
-
-  Widget _buildHomeContent() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [],
       ),
     );
   }

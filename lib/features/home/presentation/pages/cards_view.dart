@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mwan_mobile/core/router/app_router.dart';
 import 'package:mwan_mobile/core/theme/app_theme.dart';
-import 'package:mwan_mobile/features/home/presentation/pages/initiative_details_page.dart';
 import 'package:mwan_mobile/features/home/presentation/widgets/initiative_card.dart';
 
 class CardsView extends StatefulWidget {
@@ -76,11 +77,9 @@ class _CardsViewState extends State<CardsView> {
   }
 
   void _navigateToDetails(Map<String, dynamic> cardData) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => InitiativeDetailsPage(initiativeData: cardData),
-      ),
+    context.push(
+      '${AppRouter.initiativeDetailsRoute}/${cardData['id']}',
+      extra: cardData,
     );
   }
 

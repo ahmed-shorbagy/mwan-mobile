@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mwan_mobile/core/router/app_router.dart';
 import 'package:mwan_mobile/core/theme/app_theme.dart';
 import 'package:mwan_mobile/core/utils/assets.dart';
-import 'package:mwan_mobile/features/home/presentation/pages/cards_view.dart';
 
 class SideMenuView extends StatelessWidget {
   const SideMenuView({super.key});
@@ -27,12 +28,7 @@ class SideMenuView extends StatelessWidget {
                       context,
                       'البطاقات',
                       Assets.imagesCardsThree,
-                      onTap:
-                          () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const CardsView(),
-                            ),
-                          ),
+                      onTap: () => context.push(AppRouter.cardsRoute),
                     ),
                     _buildMenuItem(
                       context,
