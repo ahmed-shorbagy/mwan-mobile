@@ -7,6 +7,7 @@ import 'package:mwan_mobile/features/home/presentation/pages/home_page.dart';
 import 'package:mwan_mobile/features/home/presentation/pages/initiative_details_page.dart';
 import 'package:mwan_mobile/features/home/presentation/pages/side_menu_view.dart';
 import 'package:mwan_mobile/features/splash/presentation/pages/splash_page.dart';
+import 'package:mwan_mobile/features/water/presentation/pages/water_storage_details_page.dart';
 
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -19,6 +20,7 @@ class AppRouter {
   static const String homeKanbanRoute = '/home-kanban';
   static const String cardsRoute = '/cards';
   static const String initiativeDetailsRoute = '/initiative-details';
+  static const String waterStorageDetailsRoute = '/water-storage-details';
 
   static final GoRouter router = GoRouter(
     initialLocation: AppConstants.splashRoute,
@@ -35,6 +37,32 @@ class AppRouter {
         path: cardsRoute,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const CardsView(),
+      ),
+
+      GoRoute(
+        path: waterStorageDetailsRoute,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder:
+            (context, state) => const WaterStorageDetailsPage(
+              cardData: {
+                'title': 'زيادة القدرة التخزينية للمياه',
+                'progress': 0.1,
+                'targetDate': '05/25/2026',
+                'objectives': [
+                  {
+                    'date': '05/25/2026',
+                    'description': 'استكمال المشروع وتشغيله بالكامل',
+                    'progress': 0.1,
+                  },
+                  {
+                    'date': '05/25/2022',
+                    'description':
+                        'بدء تنفيذ المشروع وفق الخطة الزمنية المحددة',
+                    'progress': 0.1,
+                  },
+                ],
+              },
+            ),
       ),
 
       // Initiative details route with path parameter

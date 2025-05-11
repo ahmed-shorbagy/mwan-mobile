@@ -111,7 +111,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _buildOverlayMenu() {
     final menuItems = [
       {'label': 'أمن الدولة', 'svg': Assets.imagesSheild},
-      {'label': 'المياه', 'svg': Assets.imagesWaterDrop, 'active': false},
+      {
+        'label': 'المياه',
+        'svg': Assets.imagesWaterDrop,
+        'active': false,
+        'onTap': () {
+          _toggleMenu();
+          GoRouter.of(context).push(AppRouter.waterStorageDetailsRoute);
+        },
+      },
       {'label': 'الطاقة', 'svg': Assets.imagesEnergy},
       {'label': 'الغذاء', 'svg': Assets.imagesCarrot},
       {'label': 'الصحة', 'svg': Assets.imagesAmbulance},
@@ -134,6 +142,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(menuItems.length, (index) {
+                      final item = menuItems[index];
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12.0),
                         child: AnimatedBuilder(
@@ -151,11 +160,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               child: Opacity(
                                 opacity: value,
                                 child: MenuOption(
-                                  label: menuItems[index]['label'] as String,
-                                  svgPath: menuItems[index]['svg'] as String,
-                                  isActive:
-                                      menuItems[index]['active'] as bool? ??
-                                      false,
+                                  label: item['label'] as String,
+                                  svgPath: item['svg'] as String,
+                                  isActive: item['active'] as bool? ?? false,
+                                  onTap: item['onTap'] as VoidCallback?,
                                 ),
                               ),
                             );

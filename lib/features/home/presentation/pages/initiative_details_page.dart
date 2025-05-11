@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mwan_mobile/features/home/presentation/pages/initiative_expandable_details_page.dart';
 
 class InitiativeDetailsPage extends StatefulWidget {
   final Map<String, dynamic> initiativeData;
@@ -10,13 +11,22 @@ class InitiativeDetailsPage extends StatefulWidget {
 }
 
 class _InitiativeDetailsPageState extends State<InitiativeDetailsPage> {
-  int _selectedTabIndex = 0;
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onInitiativeSelected(Map<String, dynamic> initiative) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder:
+            (context) =>
+                InitiativeExpandableDetailsPage(initiative: initiative),
+      ),
+    );
   }
 
   @override
@@ -42,7 +52,6 @@ class _InitiativeDetailsPageState extends State<InitiativeDetailsPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              _buildSegmentedControl(),
               _buildSearchBar(),
               Expanded(
                 child: ListView(
@@ -55,6 +64,26 @@ class _InitiativeDetailsPageState extends State<InitiativeDetailsPage> {
                       progress1: 0.56,
                       progress2: 0.43,
                       isFavorite: false,
+                      onTap:
+                          () => _onInitiativeSelected({
+                            'title': 'المدخرات النقدية بالعملات الصعبة',
+                            'progress': 0.56,
+                            'targetDate': '05/25/2026',
+                            'objectives': [
+                              {
+                                'date': '05/25/2026',
+                                'description':
+                                    'استكمال المشروع وتشغيله بالكامل',
+                                'progress': 0.56,
+                              },
+                              {
+                                'date': '05/25/2022',
+                                'description':
+                                    'بدء تنفيذ المشروع وفق الخطة الزمنية المحددة',
+                                'progress': 0.43,
+                              },
+                            ],
+                          }),
                     ),
                     _buildInitiativeCard(
                       title: 'زيادة القدرة التخزينية للمياه',
@@ -63,6 +92,26 @@ class _InitiativeDetailsPageState extends State<InitiativeDetailsPage> {
                       progress1: 0.56,
                       progress2: 0.43,
                       isFavorite: true,
+                      onTap:
+                          () => _onInitiativeSelected({
+                            'title': 'زيادة القدرة التخزينية للمياه',
+                            'progress': 0.1,
+                            'targetDate': '05/25/2026',
+                            'objectives': [
+                              {
+                                'date': '05/25/2026',
+                                'description':
+                                    'استكمال المشروع وتشغيله بالكامل',
+                                'progress': 0.1,
+                              },
+                              {
+                                'date': '05/25/2022',
+                                'description':
+                                    'بدء تنفيذ المشروع وفق الخطة الزمنية المحددة',
+                                'progress': 0.1,
+                              },
+                            ],
+                          }),
                     ),
                     _buildInitiativeCard(
                       title: 'نسب دعم المحتاجين في المناطق الجا...',
@@ -71,6 +120,26 @@ class _InitiativeDetailsPageState extends State<InitiativeDetailsPage> {
                       progress1: 0.56,
                       progress2: 0.43,
                       isFavorite: false,
+                      onTap:
+                          () => _onInitiativeSelected({
+                            'title': 'نسب دعم المحتاجين في المناطق الجا...',
+                            'progress': 0.56,
+                            'targetDate': '05/25/2026',
+                            'objectives': [
+                              {
+                                'date': '05/25/2026',
+                                'description':
+                                    'استكمال المشروع وتشغيله بالكامل',
+                                'progress': 0.56,
+                              },
+                              {
+                                'date': '05/25/2022',
+                                'description':
+                                    'بدء تنفيذ المشروع وفق الخطة الزمنية المحددة',
+                                'progress': 0.43,
+                              },
+                            ],
+                          }),
                     ),
                   ],
                 ),
@@ -106,54 +175,6 @@ class _InitiativeDetailsPageState extends State<InitiativeDetailsPage> {
     );
   }
 
-  Widget _buildSegmentedControl() {
-    final tabs = ['المبادرات', 'البيانات الاساسية'];
-
-    return Container(
-      height: 30,
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: tabs.length,
-        itemBuilder: (context, index) {
-          final isSelected = _selectedTabIndex == index;
-          return GestureDetector(
-            onTap: () => setState(() => _selectedTabIndex = index),
-            child: Container(
-              margin: const EdgeInsets.only(left: 16),
-              child:
-                  isSelected
-                      ? Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1F8B24),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Center(
-                          child: Text(
-                            tabs[index],
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      )
-                      : Center(
-                        child: Text(
-                          tabs[index],
-                          style: TextStyle(color: Colors.white, fontSize: 14),
-                        ),
-                      ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   Widget _buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -179,7 +200,7 @@ class _InitiativeDetailsPageState extends State<InitiativeDetailsPage> {
                     fontSize: 14,
                   ),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 2),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 2),
                 ),
               ),
             ),
@@ -196,94 +217,104 @@ class _InitiativeDetailsPageState extends State<InitiativeDetailsPage> {
     required double progress1,
     required double progress2,
     required bool isFavorite,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                isFavorite ? Icons.star : Icons.star_border,
-                color: isFavorite ? Colors.amber : Colors.grey,
-                size: 20,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1A1A),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  isFavorite ? Icons.star : Icons.star_border,
+                  color: isFavorite ? Colors.amber : Colors.grey,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              const CircleAvatar(
-                radius: 12,
-                backgroundImage: NetworkImage('https://picsum.photos/200'),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF333333),
-                  borderRadius: BorderRadius.circular(4),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                const CircleAvatar(
+                  radius: 12,
+                  backgroundImage: NetworkImage('https://picsum.photos/200'),
                 ),
-                child: Text(
-                  id,
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF333333),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    id,
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color:
-                      status == 'متقدم'
-                          ? Colors.green.withOpacity(0.1)
-                          : Colors.red.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: status == 'متقدم' ? Colors.green : Colors.red,
-                        shape: BoxShape.circle,
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color:
+                        status == 'متقدم'
+                            ? Colors.green.withOpacity(0.1)
+                            : Colors.red.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: status == 'متقدم' ? Colors.green : Colors.red,
+                          shape: BoxShape.circle,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      status,
-                      style: TextStyle(
-                        color: status == 'متقدم' ? Colors.green : Colors.red,
-                        fontSize: 12,
+                      const SizedBox(width: 4),
+                      Text(
+                        status,
+                        style: TextStyle(
+                          color: status == 'متقدم' ? Colors.green : Colors.red,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const Spacer(),
-              _buildProgressIndicator(progress1, Colors.blue),
-              const SizedBox(width: 8),
-              _buildProgressIndicator(progress2, Colors.green),
-            ],
-          ),
-        ],
+                const Spacer(),
+                _buildProgressIndicator(progress1, Colors.blue),
+                const SizedBox(width: 8),
+                _buildProgressIndicator(progress2, Colors.green),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
