@@ -31,6 +31,12 @@ class _CardsViewState extends State<CardsView> {
       'progress1': 0.56,
       'progress2': 0.43,
       'isFavorite': false,
+      'user': {
+        'name': 'أحمد محمد',
+        'title': 'مدير المبادرة',
+        'email': 'ahmed@example.com',
+        'image': 'https://picsum.photos/id/1/200',
+      },
     },
     {
       'title': 'المدخرات النقدية بالعملات الصعبة',
@@ -39,6 +45,12 @@ class _CardsViewState extends State<CardsView> {
       'progress1': 0.56,
       'progress2': 0.43,
       'isFavorite': false,
+      'user': {
+        'name': 'سارة أحمد',
+        'title': 'منسق المبادرة',
+        'email': 'sara@example.com',
+        'image': 'https://picsum.photos/id/2/200',
+      },
     },
     {
       'title': 'زيادة القدرة التخزينية للمياه',
@@ -47,6 +59,12 @@ class _CardsViewState extends State<CardsView> {
       'progress1': 0.56,
       'progress2': 0.43,
       'isFavorite': true,
+      'user': {
+        'name': 'محمد علي',
+        'title': 'مدير المشروع',
+        'email': 'mohamed@example.com',
+        'image': 'https://picsum.photos/id/3/200',
+      },
     },
     {
       'title': 'نسب دعم المحتاجين في المناطق الجافه...',
@@ -55,6 +73,12 @@ class _CardsViewState extends State<CardsView> {
       'progress1': 0.56,
       'progress2': 0.43,
       'isFavorite': true,
+      'user': {
+        'name': 'فاطمة خالد',
+        'title': 'مشرف المبادرة',
+        'email': 'fatima@example.com',
+        'image': 'https://picsum.photos/id/4/200',
+      },
     },
     {
       'title': 'المدخرات النقدية بالعملات الصعبة',
@@ -63,6 +87,12 @@ class _CardsViewState extends State<CardsView> {
       'progress1': 0.56,
       'progress2': 0.43,
       'isFavorite': true,
+      'user': {
+        'name': 'خالد عبدالله',
+        'title': 'مدير التنفيذ',
+        'email': 'khalid@example.com',
+        'image': 'https://picsum.photos/id/5/200',
+      },
     },
 
     // Add more cards here

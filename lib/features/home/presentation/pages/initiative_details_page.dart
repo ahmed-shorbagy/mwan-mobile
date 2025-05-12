@@ -222,95 +222,99 @@ class _InitiativeDetailsPageState extends State<InitiativeDetailsPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: const Color(0xFF1A1A1A),
-          borderRadius: BorderRadius.circular(12),
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey[900]!, width: 1),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Top row with title and favorite icon
             Row(
               children: [
-                Icon(
-                  isFavorite ? Icons.star : Icons.star_border,
-                  color: isFavorite ? Colors.amber : Colors.grey,
-                  size: 20,
-                ),
-                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     title,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+                // Favorite icon (right for RTL)
+                Icon(
+                  isFavorite ? Icons.star : Icons.star_outline,
+                  color: isFavorite ? Colors.amber : Colors.grey[600],
+                  size: 24,
+                ),
               ],
             ),
-            const SizedBox(height: 12),
+
+            const SizedBox(height: 20),
+
+            // Bottom row with progress indicators, status, ID, and user avatar
             Row(
               children: [
-                const CircleAvatar(
-                  radius: 12,
-                  backgroundImage: NetworkImage('https://picsum.photos/200'),
-                ),
-                const SizedBox(width: 8),
+                // Progress indicators on left for RTL
+                _buildProgressIndicator(progress2, Colors.green),
+                const SizedBox(width: 10),
+                _buildProgressIndicator(progress1, Colors.blue),
+
+                const SizedBox(width: 12),
+
+                // Status badge
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                    horizontal: 16,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _getStatusBackgroundColor(status),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    status,
+                    style: TextStyle(
+                      color: _getStatusTextColor(status),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+                const Spacer(),
+
+                // ID badge on right for RTL
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
                   ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF333333),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     id,
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color:
-                        status == 'متقدم'
-                            ? Colors.green.withOpacity(0.1)
-                            : Colors.red.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: status == 'متقدم' ? Colors.green : Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        status,
-                        style: TextStyle(
-                          color: status == 'متقدم' ? Colors.green : Colors.red,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
+
+                const SizedBox(width: 10),
+
+                // User avatar on far right for RTL
+                const CircleAvatar(
+                  radius: 18,
+                  backgroundImage: NetworkImage('https://picsum.photos/200'),
                 ),
-                const Spacer(),
-                _buildProgressIndicator(progress1, Colors.blue),
-                const SizedBox(width: 8),
-                _buildProgressIndicator(progress2, Colors.green),
               ],
             ),
           ],
@@ -319,26 +323,47 @@ class _InitiativeDetailsPageState extends State<InitiativeDetailsPage> {
     );
   }
 
+  Color _getStatusBackgroundColor(String status) {
+    switch (status) {
+      case 'متقدم':
+        return Colors.green.withOpacity(0.2);
+      case 'متأخر':
+        return Colors.red.withOpacity(0.2);
+      default:
+        return Colors.orange.withOpacity(0.2);
+    }
+  }
+
+  Color _getStatusTextColor(String status) {
+    switch (status) {
+      case 'متقدم':
+        return Colors.green;
+      case 'متأخر':
+        return Colors.white;
+      default:
+        return Colors.orange;
+    }
+  }
+
   Widget _buildProgressIndicator(double value, Color color) {
     return SizedBox(
-      width: 36,
-      height: 36,
+      width: 44,
+      height: 44,
       child: Stack(
+        alignment: Alignment.center,
         children: [
           CircularProgressIndicator(
             value: value,
             backgroundColor: Colors.grey[850],
             valueColor: AlwaysStoppedAnimation<Color>(color),
-            strokeWidth: 3,
+            strokeWidth: 4,
           ),
-          Center(
-            child: Text(
-              '${(value * 100).toInt()}%',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
+          Text(
+            '${(value * 100).toInt()}%',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],

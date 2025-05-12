@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mwan_mobile/core/theme/app_theme.dart';
 
 class InitiativeCard extends StatelessWidget {
   final Map<String, dynamic> cardData;
@@ -13,103 +12,200 @@ class InitiativeCard extends StatelessWidget {
     required this.onFavoriteToggle,
   });
 
+  void _showUserInfoDialog(BuildContext context) {
+    final userData = cardData['user'] as Map<String, dynamic>;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: const Color(0xFF1A1A1A),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  radius: 40,
+                  backgroundImage: NetworkImage(userData['image']),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  userData['name'],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'المسمى الوظيفي: ${userData['title']}',
+                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'البريد الإلكتروني: ${userData['email']}',
+                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  child: const Text('إغلاق'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userData = cardData['user'] as Map<String, dynamic>;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: const Color(0xFF1A1A1A),
-          borderRadius: BorderRadius.circular(12),
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey[900]!, width: 1),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Initiative badge at top
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // Initiative badge (left for RTL view)
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                      decoration: const BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
                       ),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(4),
+                      padding: const EdgeInsets.all(2),
+                      child: const Icon(
+                        Icons.check,
+                        color: Colors.black,
+                        size: 14,
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: const BoxDecoration(
-                              color: Colors.green,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          const Text(
-                            'مبادرة 3',
-                            style: TextStyle(color: Colors.green, fontSize: 12),
-                          ),
-                        ],
+                    ),
+                    const SizedBox(width: 4),
+                    const Text(
+                      'مبادرة ٣',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
+                // Favorite icon (right for RTL)
                 GestureDetector(
                   onTap: onFavoriteToggle,
                   child: Icon(
-                    cardData['isFavorite'] ? Icons.star : Icons.star_border,
-                    color: cardData['isFavorite'] ? Colors.amber : Colors.grey,
-                    size: 20,
+                    cardData['isFavorite'] ? Icons.star : Icons.star_outline,
+                    color:
+                        cardData['isFavorite']
+                            ? Colors.amber
+                            : Colors.grey[600],
+                    size: 24,
                   ),
                 ),
               ],
             ),
+
             const SizedBox(height: 12),
-            Text(cardData['title'], style: AppTheme.headline5),
-            const SizedBox(height: 16),
+
+            // Title with padding
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                cardData['title'],
+                textAlign: TextAlign.right,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Bottom row with user avatar, ID, status and progress indicators
             Row(
               children: [
-                Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 16,
-                      backgroundImage: NetworkImage(
-                        'https://picsum.photos/200',
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF333333),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        cardData['id'],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    _buildStatusIndicator(cardData['status']),
-                  ],
-                ),
-                const Spacer(),
-                _buildProgressIndicator(cardData['progress1'], Colors.blue),
-                const SizedBox(width: 8),
+                // Progress indicators on left side for RTL
                 _buildProgressIndicator(cardData['progress2'], Colors.green),
+                const SizedBox(width: 10),
+                _buildProgressIndicator(cardData['progress1'], Colors.blue),
+
+                const SizedBox(width: 12),
+
+                // Status badge
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _getStatusBackgroundColor(cardData['status']),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    cardData['status'],
+                    style: TextStyle(
+                      color: _getStatusTextColor(cardData['status']),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+                const Spacer(),
+
+                // ID badge and User avatar on right side for RTL
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF333333),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    cardData['id'],
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 10),
+
+                // User avatar
+                GestureDetector(
+                  onTap: () => _showUserInfoDialog(context),
+                  child: CircleAvatar(
+                    radius: 18,
+                    backgroundImage: NetworkImage(userData['image']),
+                  ),
+                ),
               ],
             ),
           ],
@@ -118,50 +214,47 @@ class InitiativeCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusIndicator(String status) {
-    final isAdvanced = status == 'متقدم';
-    final color = isAdvanced ? Colors.green : Colors.red;
+  Color _getStatusBackgroundColor(String status) {
+    switch (status) {
+      case 'متقدم':
+        return Colors.green.withOpacity(0.2);
+      case 'متأخر':
+        return Colors.red.withOpacity(0.2);
+      default:
+        return Colors.orange.withOpacity(0.2);
+    }
+  }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 6,
-            height: 6,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 4),
-          Text(status, style: TextStyle(color: color, fontSize: 12)),
-        ],
-      ),
-    );
+  Color _getStatusTextColor(String status) {
+    switch (status) {
+      case 'متقدم':
+        return Colors.green;
+      case 'متأخر':
+        return Colors.white;
+      default:
+        return Colors.orange;
+    }
   }
 
   Widget _buildProgressIndicator(double value, Color color) {
     return SizedBox(
-      width: 36,
-      height: 36,
+      width: 44,
+      height: 44,
       child: Stack(
+        alignment: Alignment.center,
         children: [
           CircularProgressIndicator(
             value: value,
-            backgroundColor: Colors.grey[800],
+            backgroundColor: Colors.grey[850],
             valueColor: AlwaysStoppedAnimation<Color>(color),
-            strokeWidth: 3,
+            strokeWidth: 4,
           ),
-          Center(
-            child: Text(
-              '${(value * 100).toInt()}%',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
+          Text(
+            '${(value * 100).toInt()}%',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
