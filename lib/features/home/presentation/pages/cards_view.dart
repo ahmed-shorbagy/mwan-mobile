@@ -99,11 +99,32 @@ class _CardsViewState extends State<CardsView> {
   ];
 
   List<Map<String, dynamic>> get filteredCards {
-    final query = _searchController.text.toLowerCase();
-    if (query.isEmpty) return _cards;
-    return _cards
-        .where((card) => card['title'].toString().toLowerCase().contains(query))
-        .toList();
+    // First filter by search query
+    List<Map<String, dynamic>> results =
+        _searchController.text.isEmpty
+            ? _cards
+            : _cards
+                .where(
+                  (card) => card['title'].toString().toLowerCase().contains(
+                    _searchController.text.toLowerCase(),
+                  ),
+                )
+                .toList();
+
+    // Then filter by selected tab
+    switch (_selectedTabIndex) {
+      case 1: // المفضلة (Favorites)
+        return results.where((card) => card['isFavorite'] == true).toList();
+      case 2: // المعتمدة (Approved)
+        return results.where((card) => card['status'] == 'متقدم').toList();
+      case 3: // غير المعتمدة (Not Approved)
+        // Return cards that are not "متقدم" (advanced)
+        return results.where((card) => card['status'] != 'متقدم').toList();
+      case 4: // المتأخرة (Delayed)
+        return results.where((card) => card['status'] == 'متأخر').toList();
+      default: // الكل (All)
+        return results;
+    }
   }
 
   void _navigateToDetails(Map<String, dynamic> cardData) {
@@ -114,9 +135,21 @@ class _CardsViewState extends State<CardsView> {
   }
 
   void _toggleFavorite(int index) {
-    setState(() {
-      _cards[index]['isFavorite'] = !_cards[index]['isFavorite'];
-    });
+    // Find the index in the original _cards list
+    final card = filteredCards[index];
+    final originalIndex = _cards.indexWhere(
+      (c) =>
+          c['id'] == card['id'] &&
+          c['title'] == card['title'] &&
+          c['user']['name'] == card['user']['name'],
+    );
+
+    if (originalIndex != -1) {
+      setState(() {
+        _cards[originalIndex]['isFavorite'] =
+            !_cards[originalIndex]['isFavorite'];
+      });
+    }
   }
 
   @override
@@ -137,22 +170,59 @@ class _CardsViewState extends State<CardsView> {
               _buildHeader(),
               _buildTabs(),
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: filteredCards.length,
-                  itemBuilder: (context, index) {
-                    final card = filteredCards[index];
-                    return InitiativeCard(
-                      cardData: card,
-                      onTap: () => _navigateToDetails(card),
-                      onFavoriteToggle: () => _toggleFavorite(index),
-                    );
-                  },
-                ),
+                child:
+                    filteredCards.isEmpty
+                        ? _buildEmptyState()
+                        : ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: filteredCards.length,
+                          itemBuilder: (context, index) {
+                            final card = filteredCards[index];
+                            return InitiativeCard(
+                              cardData: card,
+                              onTap: () => _navigateToDetails(card),
+                              onFavoriteToggle: () => _toggleFavorite(index),
+                            );
+                          },
+                        ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    String message;
+    switch (_selectedTabIndex) {
+      case 1:
+        message = 'لا توجد مبادرات مفضلة';
+        break;
+      case 2:
+        message = 'لا توجد مبادرات معتمدة';
+        break;
+      case 3:
+        message = 'لا توجد مبادرات غير معتمدة';
+        break;
+      case 4:
+        message = 'لا توجد مبادرات متأخرة';
+        break;
+      default:
+        message = 'لا توجد مبادرات';
+    }
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.folder_open, size: 64, color: Colors.grey[600]),
+          const SizedBox(height: 16),
+          Text(
+            message,
+            style: TextStyle(color: Colors.grey[400], fontSize: 18),
+          ),
+        ],
       ),
     );
   }
