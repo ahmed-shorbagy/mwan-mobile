@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mwan_mobile/core/utils/assets.dart';
 
 class InitiativeCard extends StatelessWidget {
   final Map<String, dynamic> cardData;
@@ -30,7 +32,9 @@ class InitiativeCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: NetworkImage(userData['image']),
+                  backgroundImage: const NetworkImage(
+                    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop',
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -88,26 +92,19 @@ class InitiativeCard extends StatelessWidget {
                 // Initiative badge (left for RTL view)
                 Row(
                   children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                      ),
-                      padding: const EdgeInsets.all(2),
-                      child: const Icon(
-                        Icons.check,
-                        color: Colors.black,
-                        size: 14,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
                     const Text(
-                      'مبادرة ٣',
+                      '3 مبادرة',
                       style: TextStyle(
                         color: Colors.green,
-                        fontSize: 14,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
+                    ),
+                    const SizedBox(width: 6),
+                    SvgPicture.asset(
+                      Assets.imagesSealCheck,
+                      width: 18,
+                      height: 18,
                     ),
                   ],
                 ),
@@ -201,9 +198,11 @@ class InitiativeCard extends StatelessWidget {
                 // User avatar
                 GestureDetector(
                   onTap: () => _showUserInfoDialog(context),
-                  child: CircleAvatar(
+                  child: const CircleAvatar(
                     radius: 18,
-                    backgroundImage: NetworkImage(userData['image']),
+                    backgroundImage: NetworkImage(
+                      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop',
+                    ),
                   ),
                 ),
               ],

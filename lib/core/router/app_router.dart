@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mwan_mobile/core/constants/app_constants.dart';
 import 'package:mwan_mobile/features/home/presentation/pages/cards_view.dart';
-import 'package:mwan_mobile/features/home/presentation/pages/dummy_views.dart';
 import 'package:mwan_mobile/features/home/presentation/pages/home_page.dart';
 import 'package:mwan_mobile/features/home/presentation/pages/initiative_details_page.dart';
 import 'package:mwan_mobile/features/home/presentation/pages/side_menu_view.dart';
@@ -149,14 +148,6 @@ class AppRouter {
           GoRoute(
             path: sideMenuRoute,
             builder: (context, state) => const SideMenuView(),
-          ),
-          GoRoute(
-            path: twoHandsRoute,
-            builder: (context, state) => const TwoHandsView(),
-          ),
-          GoRoute(
-            path: usersRoute,
-            builder: (context, state) => const UsersView(),
           ),
         ],
       ),

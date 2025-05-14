@@ -27,15 +27,18 @@ class BottomNavBar extends StatelessWidget {
         children: [
           _buildNavItem(Assets.imagesHandArrowUp, index: 0),
           _buildNavItem(Assets.imagesTwohand, index: 1),
-          CircularMenuButton(
-            onTap: onCenterButtonTap,
-            icon: SvgPicture.asset(
-              Assets.imagesWaterDrop,
-              width: 22,
-              height: 22,
-              colorFilter: const ColorFilter.mode(
-                Colors.green,
-                BlendMode.srcIn,
+          Transform.translate(
+            offset: const Offset(0, -20),
+            child: CircularMenuButton(
+              onTap: onCenterButtonTap,
+              icon: SvgPicture.asset(
+                Assets.imagesWaterDrop,
+                width: 22,
+                height: 22,
+                colorFilter: const ColorFilter.mode(
+                  Colors.green,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
           ),

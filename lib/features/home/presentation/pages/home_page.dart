@@ -111,15 +111,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _buildOverlayMenu() {
     final menuItems = [
       {'label': 'أمن الدولة', 'svg': Assets.imagesSheild},
-      {
-        'label': 'المياه',
-        'svg': Assets.imagesWaterDrop,
-        'active': false,
-        'onTap': () {
-          _toggleMenu();
-          GoRouter.of(context).push(AppRouter.waterStorageDetailsRoute);
-        },
-      },
+      {'label': 'المياه', 'svg': Assets.imagesWaterDrop, 'active': false},
       {'label': 'الطاقة', 'svg': Assets.imagesEnergy},
       {'label': 'الغذاء', 'svg': Assets.imagesCarrot},
       {'label': 'الصحة', 'svg': Assets.imagesAmbulance},
@@ -163,7 +155,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   label: item['label'] as String,
                                   svgPath: item['svg'] as String,
                                   isActive: item['active'] as bool? ?? false,
-                                  onTap: item['onTap'] as VoidCallback?,
                                 ),
                               ),
                             );
